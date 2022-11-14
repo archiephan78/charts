@@ -39,16 +39,16 @@ spec:
   {{- end }}
   ports:
     - name: api
-      port: {{ .Values.query.service.ports.query_api }}
-      targetPort: {{ .Values.query.service.ports.query_api }}
+      port: {{ .Values.query.service.ports.api }}
+      targetPort: {{ .Values.query.service.ports.api }}
       {{- if and (or (eq .Values.query.service.type "NodePort") (eq .Values.query.service.type "LoadBalancer")) (not (empty .Values.query.service.nodePorts.cql)) }}
       nodePort: {{ .Values.query.service.nodePorts.cql }}
       {{- else if eq .Values.query.service.type "ClusterIP" }}
       nodePort: null
       {{- end }}
     - name: ui
-      port: {{ .Values.query.service.ports.query_admin }}
-      targetPort: {{ .Values.query.service.ports.query_admin }}
+      port: {{ .Values.query.service.ports.admin }}
+      targetPort: {{ .Values.query.service.ports.admin }}
       {{- if and (or (eq .Values.query.service.type "NodePort") (eq .Values.query.service.type "LoadBalancer")) (not (empty .Values.query.service.nodePorts.metrics)) }}
       nodePort: {{ .Values.query.service.nodePorts.metrics }}
       {{- else if eq .Values.query.service.type "ClusterIP" }}

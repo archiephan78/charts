@@ -81,9 +81,9 @@ spec:
           {{- end }}
           ports:
             - name: ui
-              containerPort: {{ .Values.query.service.ports.query_api }}
+              containerPort: {{ .Values.query.service.ports.api }}
             - name: admin
-              containerPort: {{ .Values.query.service.ports.query_admin }}
+              containerPort: {{ .Values.query.service.ports.admin }}
           env:
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.image.debug | quote }}

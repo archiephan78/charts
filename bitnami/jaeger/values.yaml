@@ -242,8 +242,8 @@ query:
     ## @param service.ports.....
     ##
     ports:
-      query_api: 16686
-      query_admin: 16687
+      api: 16686
+      admin: 16687
     #    agent-compact: 6831
     #    agent_binary: 6832
     #    agent_config: 5778
