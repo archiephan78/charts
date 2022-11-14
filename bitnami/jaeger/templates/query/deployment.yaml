@@ -35,13 +35,13 @@ spec:
       schedulerName: {{ .Values.schedulerName }}
       {{- end }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
-      {{- if .Values.affinity }}
-      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- if .Values.gateway.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.gateway.affinity "context" $) | nindent 8 }}
       {{- else }}
       affinity:
-        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAffinityPreset "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "context" $) | nindent 10 }}
-        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.gateway.podAffinityPreset "component" "gateway" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.gateway.podAntiAffinityPreset "component" "gateway" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.gateway.nodeAffinityPreset.type "key" .Values.gateway.nodeAffinityPreset.key "values" .Values.gateway.nodeAffinityPreset.values) | nindent 10 }}
       {{- end }}
       {{- if .Values.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.podSecurityContext "enabled" | toYaml | nindent 8 }}
@@ -79,6 +79,11 @@ spec:
           {{- if .Values.query.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.query.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
+          ports:
+            - name: ui
+              containerPort: {{ .Values.query.service.ports.query_api }}
+            - name: admin
+              containerPort: {{ .Values.query.service.ports.query_admin }}
           env:
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.image.debug | quote }}
@@ -121,8 +126,8 @@ spec:
       livenessProbe:
         httpGet:
         path: /
-        port: {{ .Values.query.service.ports.query_admin }}
+        port: admin
       readinessProbe:
         httpGet:
         path: /
-        port: {{ .Values.query.service.ports.query_admin }}
+        port: admin
