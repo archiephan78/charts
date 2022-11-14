@@ -19,7 +19,7 @@ Return the proper Docker Image Registry Secret Names
 Create the name of the query service
 */}}
 {{- define "jaeger.query.fullname" -}}
-    {{ include "common.names.fullname" . }}-query
+    {{ printf "%s-query" (include "common.names.fullname" .) }}
 {{- end -}}
 
 {{/*
