@@ -574,10 +574,6 @@ agent:
 cassandra:
   enabled: true
 
-
-## @section Statefulset parameters
-##
-
 ## @param replicaCount Number of Jaeger replicas
 ##
 replicaCount: 1
