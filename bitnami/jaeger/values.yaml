@@ -172,7 +172,7 @@ cluster:
 query:
   ## @param command Command for running the container (set to default if not set). Use array form
   ##
-  command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
+  command: []
   ## @param args Args for running the container (set to default if not set). Use array form
   ##
   args: []
