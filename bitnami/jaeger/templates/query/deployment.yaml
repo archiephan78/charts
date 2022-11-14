@@ -62,9 +62,19 @@ spec:
           {{- if .Values.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
+          {{- if .Values.diagnosticMode.enabled }}
+          command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" $) | nindent 12 }}
+          {{- else if .Values.command }}
           command: {{- include "common.tplvalues.render" (dict "value" .Values.query.command "context" $) | nindent 12 }}
-          {{- if .Values.query.args }}
+          {{- else }}
+          command: /opt/bitnami/jaeger/bin/jaeger-query
+          {{- end }}
+          {{- if .Values.diagnosticMode.enabled }}
+          args: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" $) | nindent 12 }}
+          {{- else if .Values.query.args }}
           args: {{- include "common.tplvalues.render" (dict "value" .Values.query.args "context" $) | nindent 12 }}
+          {{- else }}
+          args: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
           {{- end }}
           {{- if .Values.query.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.query.lifecycleHooks "context" $) | nindent 12 }}
