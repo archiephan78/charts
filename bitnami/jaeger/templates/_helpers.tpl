@@ -16,14 +16,10 @@ Return the proper Docker Image Registry Secret Names
 {{- end -}}
 
 {{/*
-Create the name of the service account to use
+Create the name of the query service
 */}}
-{{- define "jaeger.query.serviceAccountName" -}}
-{{- if .Values.query.serviceAccount.enabled -}}
-    {{ default (include "common.names.fullname" .) .Values.query.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.query.serviceAccount.name }}
-{{- end -}}
+{{- define "jaeger.query.fullname" -}}
+    {{ include "common.names.fullname" . }}-query
 {{- end -}}
 
 {{/*
