@@ -191,6 +191,9 @@ query:
   ## @param extraEnvVarsSecret Name of existing Secret containing extra env vars
   ##
   extraEnvVarsSecret: ""
+  ## @param replicaCount Number of Jaeger replicas
+  ##
+  replicaCount: 1
   ## @param customLivenessProbe Custom livenessProbe that overrides the default one
   ##
   customLivenessProbe: {}
