@@ -99,14 +99,22 @@ spec:
             - secretRef:
                 name: {{ .Values.query.extraEnvVarsSecret }}
             {{- end }}
-          {{- if .Values.query.customStartupProbe }}
+          {{- if not .Values.diagnosticMode.enabled }}
+          {{- if .Values.gateway.customStartupProbe }}
           startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.query.customStartupProbe "context" $) | nindent 12 }}
+          {{- else if .Values.gateway.startupProbe.enabled }}
+          startupProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.query.startupProbe "enabled") "context" $) | nindent 12 }}
+            tcpSocket:
+              port: admin
           {{- end }}
-          {{- if .Values.query.customLivenessProbe }}
+          {{- if .Values.gateway.customLivenessProbe }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.query.customLivenessProbe "context" $) | nindent 12 }}
+          {{- else if .Values.gateway.livenessProbe.enabled }}
+          livenessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.query.livenessProbe "enabled") "context" $) | nindent 12 }}
+            httpGet:
+              path: /
+              port: admin
           {{- end }}
-          {{- if .Values.query.customReadinessProbe }}
-          readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.query.customReadinessProbe "context" $) | nindent 12 }}
           {{- end }}
           {{- if .Values.query.resources }}
           resources: {{- toYaml .Values.query.resources | nindent 12 }}
@@ -123,11 +131,3 @@ spec:
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" ( dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
         {{- end }}
-      livenessProbe:
-        httpGet:
-        path: /
-        port: admin
-      readinessProbe:
-        httpGet:
-        path: /
-        port: admin

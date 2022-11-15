@@ -194,6 +194,50 @@ query:
   ## @param replicaCount Number of Jaeger replicas
   ##
   replicaCount: 1
+    ## Configure extra options for container's liveness, readiness and startup probes
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+    ## @param query.livenessProbe.enabled Enable livenessProbe on Gateway nodes
+    ## @param query.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+    ## @param query.livenessProbe.periodSeconds Period seconds for livenessProbe
+    ## @param query.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+    ## @param query.livenessProbe.failureThreshold Failure threshold for livenessProbe
+    ## @param query.livenessProbe.successThreshold Success threshold for livenessProbe
+    ##
+    livenessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    ## @param query.readinessProbe.enabled Enable readinessProbe on Gateway nodes
+    ## @param query.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+    ## @param query.readinessProbe.periodSeconds Period seconds for readinessProbe
+    ## @param query.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+    ## @param query.readinessProbe.failureThreshold Failure threshold for readinessProbe
+    ## @param query.readinessProbe.successThreshold Success threshold for readinessProbe
+    ##
+    readinessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    ## @param query.startupProbe.enabled Enable startupProbe on Gateway containers
+    ## @param query.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+    ## @param query.startupProbe.periodSeconds Period seconds for startupProbe
+    ## @param query.startupProbe.timeoutSeconds Timeout seconds for startupProbe
+    ## @param query.startupProbe.failureThreshold Failure threshold for startupProbe
+    ## @param query.startupProbe.successThreshold Success threshold for startupProbe
+    ##
+    startupProbe:
+      enabled: false
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 15
+      successThreshold: 1
   ## @param customLivenessProbe Custom livenessProbe that overrides the default one
   ##
   customLivenessProbe: {}
