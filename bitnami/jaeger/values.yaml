@@ -73,7 +73,7 @@ diagnosticMode:
 image:
   registry: docker.io
   repository: bitnami/jaeger
-  tag: 1.39.0-debian-11-r0
+  tag: 1.39.0-debian-11-r1
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -349,7 +349,7 @@ query:
   serviceAccount:
     ## @param enabled Enables ServiceAccount
     ##
-    enabled: true
+    create: true
     ## @param name ServiceAccount name
     ##
     name: jaeger-query-sa
