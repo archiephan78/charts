@@ -14,57 +14,57 @@ spec:
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.query.replicaCount }}
-  {{- if .Values.updateStrategy }}
-  strategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
+  {{- if .Values.query.updateStrategy }}
+  strategy: {{- toYaml .Values.query.updateStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/component: query
-        {{- if .Values.podLabels }}
-        {{- include "common.tplvalues.render" (dict "value" .Values.podLabels "context" $) | nindent 8 }}
+        {{- if .Values.query.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.query.podLabels "context" $) | nindent 8 }}
         {{- end }}
-      {{- if .Values.podAnnotations }}
+      {{- if .Values.query.podAnnotations }}
       annotations:
-        {{- if .Values.podAnnotations }}
-        {{- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" $) | nindent 8 }}
+        {{- if .Values.query.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.query.podAnnotations "context" $) | nindent 8 }}
         {{- end }}
       {{- end }}
     spec:
-      {{- if .Values.schedulerName }}
-      schedulerName: {{ .Values.schedulerName }}
+      {{- if .Values.query.schedulerName }}
+      schedulerName: {{ .Values.query.schedulerName }}
       {{- end }}
-      priorityClassName: {{ .Values.priorityClassName | quote }}
-      {{- if .Values.gateway.affinity }}
-      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.gateway.affinity "context" $) | nindent 8 }}
+      priorityClassName: {{ .Values.query.priorityClassName | quote }}
+      {{- if .Values.query.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.query.affinity "context" $) | nindent 8 }}
       {{- else }}
       affinity:
-        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.gateway.podAffinityPreset "component" "gateway" "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.gateway.podAntiAffinityPreset "component" "gateway" "context" $) | nindent 10 }}
-        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.gateway.nodeAffinityPreset.type "key" .Values.gateway.nodeAffinityPreset.key "values" .Values.gateway.nodeAffinityPreset.values) | nindent 10 }}
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.query.podAffinityPreset "component" "query" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.query.podAntiAffinityPreset "component" "query" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.query.nodeAffinityPreset.type "key" .Values.query.nodeAffinityPreset.key "values" .Values.query.nodeAffinityPreset.values) | nindent 10 }}
       {{- end }}
-      {{- if .Values.podSecurityContext.enabled }}
-      securityContext: {{- omit .Values.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- if .Values.query.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.query.podSecurityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
-      {{- if .Values.nodeSelector }}
-      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.nodeSelector "context" $) | nindent 8 }}
+      {{- if .Values.query.nodeSelector }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.query.nodeSelector "context" $) | nindent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
-      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
+      {{- if .Values.query.tolerations }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.query.tolerations "context" $) | nindent 8 }}
       {{- end }}
-      {{- if .Values.topologySpreadConstraints }}
-      topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.topologySpreadConstraints "context" $) | nindent 8 }}
+      {{- if .Values.query.topologySpreadConstraints }}
+      topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.query.topologySpreadConstraints "context" $) | nindent 8 }}
       {{- end }}
       containers:
         - name: jaeger-query
           image: {{ include "jaeger.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-          {{- if .Values.containerSecurityContext.enabled }}
-          securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- if .Values.query.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.query.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           {{- if .Values.diagnosticMode.enabled }}
           command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" $) | nindent 12 }}
-          {{- else if .Values.command }}
+          {{- else if .Values.query.command }}
           command: {{- include "common.tplvalues.render" (dict "value" .Values.query.command "context" $) | nindent 12 }}
           {{- else }}
           command: /opt/bitnami/jaeger/bin/jaeger-query
@@ -100,16 +100,16 @@ spec:
                 name: {{ .Values.query.extraEnvVarsSecret }}
             {{- end }}
           {{- if not .Values.diagnosticMode.enabled }}
-          {{- if .Values.gateway.customStartupProbe }}
+          {{- if .Values.query.customStartupProbe }}
           startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.query.customStartupProbe "context" $) | nindent 12 }}
-          {{- else if .Values.gateway.startupProbe.enabled }}
+          {{- else if .Values.query.startupProbe.enabled }}
           startupProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.query.startupProbe "enabled") "context" $) | nindent 12 }}
             tcpSocket:
               port: admin
           {{- end }}
-          {{- if .Values.gateway.customLivenessProbe }}
+          {{- if .Values.query.customLivenessProbe }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.query.customLivenessProbe "context" $) | nindent 12 }}
-          {{- else if .Values.gateway.livenessProbe.enabled }}
+          {{- else if .Values.query.livenessProbe.enabled }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.query.livenessProbe "enabled") "context" $) | nindent 12 }}
             httpGet:
               path: /
@@ -124,10 +124,10 @@ spec:
             {{- include "common.tplvalues.render" ( dict "value" .Values.query.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
 
-        {{- if .Values.sidecars }}
-        {{- include "common.tplvalues.render" ( dict "value" .Values.sidecars "context" $) | nindent 8 }}
+        {{- if .Values.query.sidecars }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.query.sidecars "context" $) | nindent 8 }}
         {{- end }}
       volumes:
-        {{- if .Values.extraVolumes }}
-        {{- include "common.tplvalues.render" ( dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
+        {{- if .Values.query.extraVolumes }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.query.extraVolumes "context" $) | nindent 8 }}
         {{- end }}

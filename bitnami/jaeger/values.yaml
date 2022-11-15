@@ -194,50 +194,50 @@ query:
   ## @param replicaCount Number of Jaeger replicas
   ##
   replicaCount: 1
-    ## Configure extra options for container's liveness, readiness and startup probes
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
-    ## @param query.livenessProbe.enabled Enable livenessProbe on Gateway nodes
-    ## @param query.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
-    ## @param query.livenessProbe.periodSeconds Period seconds for livenessProbe
-    ## @param query.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
-    ## @param query.livenessProbe.failureThreshold Failure threshold for livenessProbe
-    ## @param query.livenessProbe.successThreshold Success threshold for livenessProbe
-    ##
-    livenessProbe:
-      enabled: true
-      failureThreshold: 3
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      successThreshold: 1
-      timeoutSeconds: 1
-    ## @param query.readinessProbe.enabled Enable readinessProbe on Gateway nodes
-    ## @param query.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
-    ## @param query.readinessProbe.periodSeconds Period seconds for readinessProbe
-    ## @param query.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
-    ## @param query.readinessProbe.failureThreshold Failure threshold for readinessProbe
-    ## @param query.readinessProbe.successThreshold Success threshold for readinessProbe
-    ##
-    readinessProbe:
-      enabled: true
-      failureThreshold: 3
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      successThreshold: 1
-      timeoutSeconds: 1
-    ## @param query.startupProbe.enabled Enable startupProbe on Gateway containers
-    ## @param query.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
-    ## @param query.startupProbe.periodSeconds Period seconds for startupProbe
-    ## @param query.startupProbe.timeoutSeconds Timeout seconds for startupProbe
-    ## @param query.startupProbe.failureThreshold Failure threshold for startupProbe
-    ## @param query.startupProbe.successThreshold Success threshold for startupProbe
-    ##
-    startupProbe:
-      enabled: false
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      timeoutSeconds: 1
-      failureThreshold: 15
-      successThreshold: 1
+  ## Configure extra options for container's liveness, readiness and startup probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param query.livenessProbe.enabled Enable livenessProbe on Gateway nodes
+  ## @param query.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+  ## @param query.livenessProbe.periodSeconds Period seconds for livenessProbe
+  ## @param query.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+  ## @param query.livenessProbe.failureThreshold Failure threshold for livenessProbe
+  ## @param query.livenessProbe.successThreshold Success threshold for livenessProbe
+  ##
+  livenessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  ## @param query.readinessProbe.enabled Enable readinessProbe on Gateway nodes
+  ## @param query.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+  ## @param query.readinessProbe.periodSeconds Period seconds for readinessProbe
+  ## @param query.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+  ## @param query.readinessProbe.failureThreshold Failure threshold for readinessProbe
+  ## @param query.readinessProbe.successThreshold Success threshold for readinessProbe
+  ##
+  readinessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  ## @param query.startupProbe.enabled Enable startupProbe on Gateway containers
+  ## @param query.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+  ## @param query.startupProbe.periodSeconds Period seconds for startupProbe
+  ## @param query.startupProbe.timeoutSeconds Timeout seconds for startupProbe
+  ## @param query.startupProbe.failureThreshold Failure threshold for startupProbe
+  ## @param query.startupProbe.successThreshold Success threshold for startupProbe
+  ##
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 15
+    successThreshold: 1
   ## @param customLivenessProbe Custom livenessProbe that overrides the default one
   ##
   customLivenessProbe: {}
@@ -356,6 +356,115 @@ query:
     ## @param commonAnnotations Annotations to add to all deployed objects
     ##
     annotations: {}
+    ## @param serviceAccount.automountServiceAccountToken Automount API credentials for a service account.
+    ##
+    automountServiceAccountToken: true
+
+  ## @param podManagementPolicy StatefulSet pod management policy
+  ##
+  podManagementPolicy: OrderedReady
+  ## Pod security context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  ## @param podSecurityContext.enabled Enabled Jaeger pods' Security Context
+  ## @param podSecurityContext.fsGroup Set Jaeger pod's Security Context fsGroup
+  ##
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+  ## Configure Container Security Context (only main container)
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param containerSecurityContext.enabled Enabled Jaeger containers' Security Context
+  ## @param containerSecurityContext.runAsUser Set Jaeger container's Security Context runAsUser
+  ## @param containerSecurityContext.runAsNonRoot Force the container to be run as non root
+  ##
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsNonRoot: true
+  ## @param priorityClassName Jaeger pods' priority.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
+  ## @param podAnnotations Additional pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: { }
+  ## @param podLabels Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: { }
+  ## @param podAffinityPreset Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  ##
+  podAffinityPreset: ""
+  ## @param podAntiAffinityPreset Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  ##
+  podAntiAffinityPreset: soft
+  ## Node affinity preset
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
+  ##
+  nodeAffinityPreset:
+    ## @param nodeAffinityPreset.type Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+    ##
+    type: ""
+    ## @param nodeAffinityPreset.key Node label key to match. Ignored if `affinity` is set
+    ##
+    key: ""
+    ## @param nodeAffinityPreset.values Node label values to match. Ignored if `affinity` is set
+    ## E.g.
+    ## values:
+    ##   - e2e-az1
+    ##   - e2e-az2
+    ##
+    values: [ ]
+  ## @param affinity Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## NOTE: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+  ##
+  affinity: { }
+  ## @param nodeSelector Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: { }
+  ## @param tolerations Tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: [ ]
+  ## @param topologySpreadConstraints Topology Spread Constraints for pod assignment
+  ## https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+  ## The value is evaluated as a template
+  ##
+  topologySpreadConstraints: [ ]
+  ## @param schedulerName Alternative scheduler
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ""
+  ## @param web.updateStrategy.type Airflow web deployment strategy type
+    #  ## @param web.updateStrategy.rollingUpdate Airflow web deployment rolling update configuration parameters
+    #  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+    #  ##
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate: {}
+  ## @param extraVolumes Optionally specify extra list of additional volumes for jaeger container
+  ##
+  extraVolumes: [ ]
+  ## @param initContainers Add additional init containers to the jaeger pods
+  ##
+  initContainers: [ ]
+  ## @param sidecars Add additional sidecar containers to the jaeger pods
+  ##
+  sidecars: [ ]
+
+
+
+
+
+
+
+
+
 
 
 
@@ -364,298 +473,3 @@ query:
 ##
 cassandra:
   enabled: true
-## @param updateStrategy.type updateStrategy for Jaeger statefulset
-## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
-##
-updateStrategy:
-  type: RollingUpdate
-## @param podManagementPolicy StatefulSet pod management policy
-##
-podManagementPolicy: OrderedReady
-## Pod security context
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
-## @param podSecurityContext.enabled Enabled Jaeger pods' Security Context
-## @param podSecurityContext.fsGroup Set Jaeger pod's Security Context fsGroup
-##
-podSecurityContext:
-  enabled: true
-  fsGroup: 1001
-## Configure Container Security Context (only main container)
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-## @param containerSecurityContext.enabled Enabled Jaeger containers' Security Context
-## @param containerSecurityContext.runAsUser Set Jaeger container's Security Context runAsUser
-## @param containerSecurityContext.runAsNonRoot Force the container to be run as non root
-##
-containerSecurityContext:
-  enabled: true
-  runAsUser: 1001
-  runAsNonRoot: true
-## @param priorityClassName Jaeger pods' priority.
-## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
-##
-priorityClassName: ""
-## @param podAnnotations Additional pod annotations
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-##
-podAnnotations: {}
-## @param podLabels Additional pod labels
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-##
-podLabels: {}
-## @param podAffinityPreset Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
-## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
-##
-podAffinityPreset: ""
-## @param podAntiAffinityPreset Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
-## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
-##
-podAntiAffinityPreset: soft
-## Node affinity preset
-## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
-##
-nodeAffinityPreset:
-  ## @param nodeAffinityPreset.type Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
-  ##
-  type: ""
-  ## @param nodeAffinityPreset.key Node label key to match. Ignored if `affinity` is set
-  ##
-  key: ""
-  ## @param nodeAffinityPreset.values Node label values to match. Ignored if `affinity` is set
-  ## E.g.
-  ## values:
-  ##   - e2e-az1
-  ##   - e2e-az2
-  ##
-  values: []
-## @param affinity Affinity for pod assignment
-## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-## NOTE: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
-##
-affinity: {}
-## @param nodeSelector Node labels for pod assignment
-## ref: https://kubernetes.io/docs/user-guide/node-selection/
-##
-nodeSelector: {}
-## @param tolerations Tolerations for pod assignment
-## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-##
-tolerations: []
-## @param topologySpreadConstraints Topology Spread Constraints for pod assignment
-## https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-## The value is evaluated as a template
-##
-topologySpreadConstraints: []
-## @param schedulerName Alternative scheduler
-## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-##
-schedulerName: ""
-## @param terminationGracePeriodSeconds In seconds, time the given to the Jaeger pod needs to terminate gracefully
-## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
-##
-terminationGracePeriodSeconds: ""
-## @param extraVolumes Optionally specify extra list of additional volumes for jaeger container
-##
-extraVolumes: []
-## @param initContainers Add additional init containers to the jaeger pods
-##
-initContainers: []
-## @param sidecars Add additional sidecar containers to the jaeger pods
-##
-sidecars: []
-## Jaeger Pod Disruption Budget configuration
-## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-##
-pdb:
-  ## @param pdb.create Enable/disable a Pod Disruption Budget creation
-  ##
-  create: false
-  ## @param pdb.minAvailable Mininimum number of pods that must still be available after the eviction
-  ##
-  minAvailable: 1
-  ## @param pdb.maxUnavailable Max number of pods that can be unavailable after the eviction
-  ##
-  maxUnavailable: ""
-## @param hostNetwork Enable HOST Network
-## If hostNetwork true ->  dnsPolicy is set to ClusterFirstWithHostNet
-##
-hostNetwork: false
-## Jaeger container ports to open
-## If hostNetwork true: the hostPort is set identical to the containerPort
-## @param containerPorts.intra Intra Port on the Host and Container
-## @param containerPorts.tls TLS Port on the Host and Container
-## @param containerPorts.jmx JMX Port on the Host and Container
-## @param containerPorts.cql CQL Port on the Host and Container
-##
-containerPorts:
-  intra: 7000
-  tls: 7001
-  jmx: 7199
-  cql: 9042
-
-## Jaeger ports to be exposed as hostPort
-## If hostNetwork is false, only the ports specified here will be exposed (or not if set to an empty string)
-## @param hostPorts.intra Intra Port on the Host
-## @param hostPorts.tls TLS Port on the Host
-## @param hostPorts.jmx JMX Port on the Host
-## @param hostPorts.cql CQL Port on the Host
-##
-hostPorts:
-  intra: ""
-  tls: ""
-  jmx: ""
-  cql: ""
-
-## @section RBAC parameters
-##
-
-## Jaeger pods ServiceAccount
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-##
-serviceAccount:
-  ## @param serviceAccount.create Enable the creation of a ServiceAccount for Jaeger pods
-  ##
-  create: true
-  ## @param serviceAccount.name The name of the ServiceAccount to use.
-  ## If not set and create is true, a name is generated using the jaeger.fullname template
-  ##
-  name: ""
-  ## @param serviceAccount.annotations Annotations for Jaeger Service Account
-  ##
-  annotations: {}
-  ## @param serviceAccount.automountServiceAccountToken Automount API credentials for a service account.
-  ##
-  automountServiceAccountToken: true
-
-## @section Traffic Exposure Parameters
-##
-
-## Network policies
-## Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
-##
-networkPolicy:
-  ## @param networkPolicy.enabled Specifies whether a NetworkPolicy should be created
-  ##
-  enabled: false
-  ## @param networkPolicy.allowExternal Don't require client label for connections
-  ## The Policy model to apply. When set to false, only pods with the correct
-  ## client label will have network access to the port Redis&reg; is listening
-  ## on. When true, Redis&reg; will accept connections from any source
-  ## (with the correct destination port).
-  ##
-  allowExternal: true
-
-## @section Persistence parameters
-##
-
-## Enable persistence using Persistent Volume Claims
-## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
-##
-persistence:
-  ## @param persistence.enabled Enable Jaeger data persistence using PVC, use a Persistent Volume Claim, If false, use emptyDir
-  ##
-  enabled: true
-  ## @param persistence.storageClass PVC Storage Class for Jaeger data volume
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  storageClass: ""
-  ## @param persistence.commitStorageClass PVC Storage Class for Jaeger Commit Log volume
-  ## Storage class to use with CASSANDRA_COMMITLOG_DIR to reduce the concurrence for writing data and commit logs
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/jaeger
-  ## If set to "-", commitStorageClass: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  commitStorageClass: ""
-  ## @param persistence.annotations Persistent Volume Claim annotations
-  ##
-  annotations: {}
-  ## @param persistence.accessModes Persistent Volume Access Mode
-  ##
-  accessModes:
-    - ReadWriteOnce
-  ## @param persistence.size PVC Storage Request for Jaeger data volume
-  ##
-  size: 8Gi
-  ## @param persistence.commitLogsize PVC Storage Request for Jaeger commit log volume. Unset by default
-  ##
-  commitLogsize: 2Gi
-  ## @param persistence.mountPath The path the data volume will be mounted at
-  ##
-  mountPath: /bitnami/jaeger
-  ## @param persistence.commitLogMountPath The path the commit log volume will be mounted at. Unset by default. Set it to '/bitnami/jaeger/commitlog' to enable a separate commit log volume
-  ##
-  # commitLogMountPath: /bitnami/jaeger/commitlog
-  commitLogMountPath: ""
-
-## @section Volume Permissions parameters
-##
-
-## Init containers parameters:
-## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
-##
-volumePermissions:
-  ## @param volumePermissions.enabled Enable init container that changes the owner and group of the persistent volume
-  ##
-  enabled: false
-  ## @param volumePermissions.image.registry Init container volume image registry
-  ## @param volumePermissions.image.repository Init container volume image repository
-  ## @param volumePermissions.image.tag Init container volume image tag (immutable tags are recommended)
-  ## @param volumePermissions.image.digest Init container volume image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-  ## @param volumePermissions.image.pullPolicy Init container volume pull policy
-  ## @param volumePermissions.image.pullSecrets Specify docker-registry secret names as an array
-  ##
-  image:
-    registry: docker.io
-    repository: bitnami/bitnami-shell
-    tag: 11-debian-11-r40
-    digest: ""
-    pullPolicy: IfNotPresent
-    ## Optionally specify an array of imagePullSecrets.
-    ## Secrets must be manually created in the namespace.
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ## e.g:
-    ## pullSecrets:
-    ##   - myRegistryKeySecretName
-    ##
-    pullSecrets: []
-  ## Init container' resource requests and limits
-  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  ## We usually recommend not to specify default resources and to leave this as a conscious
-  ## choice for the user. This also increases chances charts run on environments with little
-  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
-  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  ## @param volumePermissions.resources.limits The resources limits for the container
-  ## @param volumePermissions.resources.requests The requested resources for the container
-  ##
-  resources:
-    ## Example:
-    ## limits:
-    ##    cpu: 100m
-    ##    memory: 128Mi
-    ##
-    limits: {}
-    ## Examples:
-    ## requests:
-    ##    cpu: 100m
-    ##    memory: 128Mi
-    ##
-    requests: {}
-  ## Init container Security Context
-  ## Note: the chown of the data folder is done to securityContext.runAsUser
-  ## and not the below volumePermissions.securityContext.runAsUser
-  ## @param volumePermissions.securityContext.runAsUser User ID for the init container
-  ##
-  ## When runAsUser is set to special value "auto", init container will try to chwon the
-  ## data folder to autodetermined user&group, using commands: `id -u`:`id -G | cut -d" " -f2`
-  ## "auto" is especially useful for OpenShift which has scc with dynamic userids (and 0 is not allowed).
-  ## You may want to use this volumePermissions.securityContext.runAsUser="auto" in combination with
-  ## pod securityContext.enabled=false and shmVolume.chmod.enabled=false
-  ##
-  securityContext:
-    runAsUser: 0
-
