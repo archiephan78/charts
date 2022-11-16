@@ -56,12 +56,57 @@ spec:
       topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.query.topologySpreadConstraints "context" $) | nindent 8 }}
       {{- end }}
       initContainers:
-      - name: jaeger-cassandra-schema
+      - name: jaeger-cassandra-schema-grabber
         image: {{ include "jaeger.image" . }}
         command: [ "cp", "-r", "/opt/bitnami/jaeger/cassandra-schema", "/cassandra-schema-files/" ]
         volumeMounts:
           - name: cassandra-schema-files
             mountPath: "/cassandra-schema-files"
+      - name: jaeger-cassandra-schema-exec
+        image: {{ .Values.cassandra.image.registry }}/{{ .Values.cassandra.image.repository }}:{{ .Values.cassandra.image.tag }}
+        command:
+          - /bin/bash
+        args:
+          - -ec
+          - |
+            #!/bin/bash
+
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+
+            . /opt/bitnami/scripts/libos.sh
+
+            ls /cassandra-schema-files/
+            env
+
+            echo "cqlsh -u  -p  -e QUIT"
+            check_cassandra_connection() {
+            echo "SELECT 1" | cqlsh -u $CQLSH_USER -p $CQLSH_PASSWORD -e "QUIT"
+            }
+
+            info "Connecting to the Cassandra instance $CQLSH_HOST:$CQLSH_PORT"
+            if ! retry_while "check_cassandra_connection"; then
+            error "Could not connect to the database server"
+            return 1
+            else
+            info "Connection check success"
+            /cassandra-schema-files/docker.sh
+            fi
+        env:
+        - name: CQLSH
+          value: /opt/bitnami/cassandra/bin/cqlsh
+        - name: CQLSH_HOST
+          value: {{ printf "%s-cassandra" (include "common.names.fullname" .) }}
+        - name: CQLSH_PORT
+          value: {{ .Values.cassandra.containerPorts.cql | quote }}
+        - name: CQLSH_USER
+          value: {{ .Values.cassandra.dbUser.user }}
+        - name: CQLSH_PASSWORD
+          value: {{include "getValueFromSecret" (dict "Namespace" .Release.Namespace "Name" (printf "%s-cassandra" (include "common.names.fullname" .)) "Length" 10 "Key" "cassandra-password")}}
+        volumeMounts:
+        - name: cassandra-schema-files
+          mountPath: "/cassandra-schema-files"
       {{- if .Values.query.initContainers }}
       {{- include "common.tplvalues.render" (dict "value" .Values.query.initContainers "context" $) | nindent 8 }}
       {{- end }}
